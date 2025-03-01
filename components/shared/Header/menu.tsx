@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import ModeToggle from "./mode-toggle";
+import UserButton from "./user-button";
 
 const Menu = () => {
   return (
@@ -22,12 +23,7 @@ const Menu = () => {
               Cart
             </Link>
           </Button>
-          <Button asChild>
-            <Link href="/sign-in">
-              <UserIcon />
-              Sign In
-            </Link>
-          </Button>
+          <UserButton />
         </nav>
         
         <nav className="md:hidden">
@@ -44,12 +40,7 @@ const Menu = () => {
                   Cart
                 </Link>
               </Button>
-              <Button asChild>
-                <Link href="/sign-in">
-                  <UserIcon />
-                  Sign In
-                </Link>
-              </Button>
+              <UserButton />
               <SheetDescription></SheetDescription>
             </SheetContent>
           </Sheet>
