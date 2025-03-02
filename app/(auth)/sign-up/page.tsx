@@ -11,6 +11,7 @@ import {
 import { APP_NAME } from '@/lib/constants';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import SignUpForm from './signup-form';
 
 export const metadata: Metadata = {
   title: 'Sign Up',
@@ -49,7 +50,7 @@ const SignUp = async (props: {
             Enter your information below to create your account
           </CardDescription>
         </CardHeader>
-        <CardContent className='space-y-4'>{/* FORM HERE */}</CardContent>
+        <CardContent className='space-y-4'><SignUpForm /></CardContent>
       </Card>
     </div>
   );
