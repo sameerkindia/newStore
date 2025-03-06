@@ -1,14 +1,19 @@
 import React from 'react'
+import CartTable from './cart-table'
+import { getMyCart } from '@/lib/actions/cart.actions';
 
 
 export const metadata = {
   title: 'Shopping Cart'
 }
 
-const Cart = () => {
+const CartPage = async () => {
+  const cart = await getMyCart();
   return (
-    <div>Cart</div>
+    <>
+    <CartTable cart={cart} />
+    </>
   )
 }
 
-export default Cart
+export default CartPage
