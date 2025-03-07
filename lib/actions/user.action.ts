@@ -71,6 +71,16 @@ export async function signUp(prevState: unknown, formData: FormData) {
   }
 }
 
+// Get user by ID
+export async function getUserById(userId: string) {
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+  });
+
+  if (!user) throw new Error('User not found');
+  return user;
+}
+
 // Sign the user out
 export async function signOutUser() {
   await signOut();
