@@ -22,6 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader } from "lucide-react";
+import { updateUserAddress } from "@/lib/actions/user.action";
+import { toast } from "sonner";
 
 const ShippingAddressForm = ({
   address,
@@ -36,6 +38,21 @@ const ShippingAddressForm = ({
     defaultValues: address || shippingAddressDefaultValues,
   });
 
+  const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = async (
+    values
+  ) => {
+    startTransition(async () => {
+      const res = await updateUserAddress(values);
+  
+      if (!res.success) {
+        toast(res.message);
+        return;
+      }
+  
+      router.push('/payment-method');
+    });
+  };
+
   return (
     <>
       <div className="max-w-md mx-auto space-y-4">
@@ -46,7 +63,7 @@ const ShippingAddressForm = ({
         <Form {...form}>
           <form
             method="post"
-            // onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
             <div className="flex flex-col gap-5 md:flex-row">
