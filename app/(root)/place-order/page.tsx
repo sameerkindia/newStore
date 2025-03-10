@@ -18,6 +18,7 @@ import { getMyCart } from '@/lib/actions/cart.actions';
 import { getUserById } from '@/lib/actions/user.action';
 import { formatCurrency } from '@/lib/utils';
 import { ShippingAddress } from '@/types';
+import PlaceOrderForm from './place-order-form';
 
 export const metadata = {
   title: 'Place Order',
@@ -116,6 +117,7 @@ const placeOrderPage = async () => {
               <Link href='/cart'>
                 <Button variant='outline'>Edit</Button>
               </Link>
+              <PlaceOrderForm />
             </CardContent>
           </Card>
         </div>
