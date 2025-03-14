@@ -25,7 +25,7 @@ const Menu = () => {
           </Button>
           <UserButton />
         </nav>
-        
+
         <nav className="md:hidden">
           <Sheet>
             <SheetTrigger className="align-middle">
