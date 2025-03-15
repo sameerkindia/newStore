@@ -36,28 +36,28 @@ const ProductForm = ({
 }) => {
   const router = useRouter();
 
-  let form;
+  // let form;
 
-  if(type === "Update"){
-    form = useForm<z.infer<typeof updateProductSchema>>({
-        resolver:zodResolver(updateProductSchema),
-        defaultValues: product,
-      })
-  }else{
-    form = useForm<z.infer<typeof insertProductSchema>>({
-      resolver:zodResolver(insertProductSchema),
-      defaultValues: productDefaultValues,
-    })
-  }
+  // if(type === "Update"){
+  //   form = useForm<z.infer<typeof updateProductSchema>>({
+  //       resolver:zodResolver(updateProductSchema),
+  //       defaultValues: product,
+  //     })
+  // }else{
+  //   form = useForm<z.infer<typeof insertProductSchema>>({
+  //     resolver:zodResolver(insertProductSchema),
+  //     defaultValues: productDefaultValues,
+  //   })
+  // }
 
-  // const form = useForm<z.infer<typeof insertProductSchema>>({
-  //   resolver:
-  //     type === "Update"
-  //       ? zodResolver(updateProductSchema)
-  //       : zodResolver(insertProductSchema),
-  //   defaultValues:
-  //     product && type === "Update" ? product : productDefaultValues,
-  // });
+  const form = useForm<z.infer<typeof insertProductSchema>>({
+    resolver:
+      type === "Update"
+        ? zodResolver(updateProductSchema)
+        : zodResolver(insertProductSchema),
+    defaultValues:
+      product && type === "Update" ? product : productDefaultValues,
+  });
 
   return (
     <Form {...form}>
