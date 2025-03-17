@@ -324,13 +324,31 @@ export async function getOrderSummary() {
 
 // Get All Orders (Admin)
 export async function getAllOrders({
-  limit = PAGE_SIZE,
-  page,
-}: {
-  limit?: number;
-  page: number;
-}) {
+    limit = PAGE_SIZE,
+    page,
+    query,
+  }: {
+    query: string;
+    limit?: number;
+    page: number;
+  }) {
+
+  const queryFilter: Prisma.OrderWhereInput =
+    query && query !== 'all'
+      ? {
+          user: {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            } as Prisma.StringFilter,
+          },
+        }
+      : {};
+
   const data = await prisma.order.findMany({
+    where: {
+      ...queryFilter,
+    },
     orderBy: { createdAt: 'desc' },
     take: limit,
     skip: (page - 1) * limit,
@@ -344,6 +362,7 @@ export async function getAllOrders({
     totalPages: Math.ceil(dataCount / limit),
   };
 }
+
 
 
 // Delete Order
@@ -401,3 +420,39 @@ export async function deliverOrder(orderId: string) {
     return { success: false, message: formatError(err) };
   }
 }
+
+// export async function getAllUsers({
+//   limit = PAGE_SIZE,
+//   page,
+//   query,
+// }: {
+//   limit?: number;
+//   page: number;
+//   query: string;
+// }) {
+//   const queryFilter: Prisma.UserWhereInput =
+//     query && query !== 'all'
+//       ? {
+//           name: {
+//             contains: query,
+//             mode: 'insensitive',
+//           } as Prisma.StringFilter,
+//         }
+//       : {};
+
+//   const data = await prisma.user.findMany({
+//     where: {
+//       ...queryFilter,
+//     },
+//     orderBy: { createdAt: 'desc' },
+//     take: limit,
+//     skip: (page - 1) * limit,
+//   });
+
+//   const dataCount = await prisma.user.count();
+
+//   return {
+//     data,
+//     totalPages: Math.ceil(dataCount / limit),
+//   };
+// }
