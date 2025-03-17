@@ -2,12 +2,15 @@
 
 import { auth, signIn, signOut } from '@/auth';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
-import { paymentMethodSchema, shippingAddressSchema, signInFormSchema, signUpFormSchema } from '../validators';
+import { paymentMethodSchema, shippingAddressSchema, signInFormSchema, signUpFormSchema, updateUserSchema } from '../validators';
 import { hashSync } from 'bcrypt-ts-edge';
 import { prisma } from '@/db/prisma';
 import { formatError } from '../utils';
 import { ShippingAddress } from '@/types';
 import { z } from 'zod';
+import { PAGE_SIZE } from '../constants';
+import { revalidatePath } from 'next/cache';
+import { Prisma } from '@prisma/client';
 // import { signInFormSchema } from './validator';
 
 // Sign in the user with credentials
@@ -166,6 +169,105 @@ export async function updateProfile(user: { name: string; email: string }) {
         name: user.name,
       },
     });
+
+    return {
+      success: true,
+      message: 'User updated successfully',
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+
+// Get all users
+// export async function getAllUsers({
+//   limit = PAGE_SIZE,
+//   page,
+// }: {
+//   limit?: number;
+//   page: number;
+// }) {
+//   const data = await prisma.user.findMany({
+//     orderBy: { createdAt: 'desc' },
+//     take: limit,
+//     skip: (page - 1) * limit,
+//   });
+
+//   const dataCount = await prisma.user.count();
+
+//   return {
+//     data,
+//     totalPages: Math.ceil(dataCount / limit),
+//   };
+// }
+
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page,
+  query,
+}: {
+  limit?: number;
+  page: number;
+  query: string;
+}) {
+  const queryFilter: Prisma.UserWhereInput =
+    query && query !== 'all'
+      ? {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          } as Prisma.StringFilter,
+        }
+      : {};
+
+  const data = await prisma.user.findMany({
+    where: {
+      ...queryFilter,
+    },
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.user.count();
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+
+
+// Delete user by ID
+export async function deleteUser(id: string) {
+  try {
+    await prisma.user.delete({ where: { id } });
+
+    revalidatePath('/admin/users');
+
+    return {
+      success: true,
+      message: 'User deleted successfully',
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+
+// Update user
+export async function updateUser(user: z.infer<typeof updateUserSchema>) {
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: user.name,
+        role: user.role,
+      },
+    });
+
+    revalidatePath('/admin/users');
 
     return {
       success: true,
