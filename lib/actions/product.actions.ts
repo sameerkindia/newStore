@@ -34,11 +34,17 @@ export async function getAllProducts({
   limit = PAGE_SIZE,
   page,
   category,
+  price,
+  rating,
+  sort,
 }: {
   query: string;
+  category: string;
   limit?: number;
   page: number;
-  category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
 }) {
   const data = await prisma.product.findMany({
     skip: (page - 1) * limit,
@@ -125,6 +131,28 @@ export async function updateProduct(data: z.infer<typeof updateProductSchema>) {
 export async function getProductById(productId: string) {
   const data = await prisma.product.findFirst({
     where: { id: productId },
+  });
+
+  return convertToPlainObject(data);
+}
+
+
+// Get product categories
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ['category'],
+    _count: true,
+  });
+
+  return data;
+}
+
+// Get featured products
+export async function getFeaturedProducts() {
+  const data = await prisma.product.findMany({
+    where: { isFeatured: true },
+    orderBy: { createdAt: 'desc' },
+    take: 4,
   });
 
   return convertToPlainObject(data);
