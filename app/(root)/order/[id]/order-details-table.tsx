@@ -28,15 +28,18 @@ import {
 } from "@/lib/actions/order.actions";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import StripePayment from "./stripe-payment";
 
 const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
+  stripeClientSecret,
 }: {
   order: any;
   paypalClientId: string;
   isAdmin: boolean;
+  stripeClientSecret: string | null;
 }) => {
   const {
     shippingAddress,
@@ -117,9 +120,9 @@ const OrderDetailsTable = ({
 
   return (
     <>
-      <h1 className="py-4 text-2xl"> Order {formatId(order.id)}</h1>
-      <div className="grid md:grid-cols-3 md:gap-5">
-        <div className="overflow-x-auto md:col-span-2 space-y-4">
+      <h1 className="text-2xl py-4"> Order {formatId(order.id)}</h1>
+      <div className="grid md:gap-5 md:grid-cols-3">
+        <div className="md:col-span-2 overflow-x-auto space-y-4">
           <Card>
             <CardContent className="p-4 gap-4">
               <h2 className="text-xl pb-4">Payment Method</h2>
@@ -201,7 +204,7 @@ const OrderDetailsTable = ({
         </div>
         <div>
           <Card>
-            <CardContent className="p-4 space-y-4 gap-4">
+            <CardContent className="p-4 gap-4 space-y-4">
               <h2 className="text-xl pb-4">Order Summary</h2>
               <div className="flex justify-between">
                 <div>Items</div>
@@ -220,6 +223,8 @@ const OrderDetailsTable = ({
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
 
+              {/* Paypal Payment */}
+
               {!isPaid && paymentMethod === "PayPal" && (
                 <div>
                   <PayPalScriptProvider options={{ clientId: paypalClientId }}>
@@ -232,6 +237,16 @@ const OrderDetailsTable = ({
                 </div>
               )}
 
+              {/* Stripe Payment */}
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={Number(order.totalPrice) * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
+              )}
+
+              {/* Cash on Delivery */}
               {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
                 <MarkAsPaidButton />
               )}
