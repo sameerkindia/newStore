@@ -83,18 +83,18 @@ export const config = {
           token.name = user.email!.split("@")[0];
 
           // Update the user in the database with the new name
-          // await prisma.user.update({
-          //   where: { id: user.id },
-          //   data: { name: token.name },
-          // });
-
-          const updatedUser = await fetch("/api/auth/update-user", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: token.id, name: session.user.name }),
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { name: token.name },
           });
 
-          console.log("user updated" , updatedUser)
+          // const updatedUser = await fetch("/api/auth/update-user", {
+          //   method: "POST",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify({ userId: token.id, name: session.user.name }),
+          // });
+
+          // console.log("user updated" , updatedUser)
         }
 
         if (trigger === "signIn" || trigger === "signUp") {
