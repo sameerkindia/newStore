@@ -64,7 +64,6 @@ export const config = {
       session.user.name = token.name;
       session.user.role = token.role;
 
-      // console.log(session, "this is from auth")
       // If there is an update, set the name on the session
       if (trigger === "update") {
         session.user.name = token.name;
@@ -72,7 +71,6 @@ export const config = {
       return session;
     },
     async jwt({ token, user, trigger, session }: any) {
-      // console.log(token , "this is token")
       // Assign user fields to token
       if (user) {
         token.id = user.id;
@@ -88,13 +86,6 @@ export const config = {
             data: { name: token.name },
           });
 
-          // const updatedUser = await fetch("/api/auth/update-user", {
-          //   method: "POST",
-          //   headers: { "Content-Type": "application/json" },
-          //   body: JSON.stringify({ userId: token.id, name: session.user.name }),
-          // });
-
-          // console.log("user updated" , updatedUser)
         }
 
         if (trigger === "signIn" || trigger === "signUp") {
@@ -126,7 +117,7 @@ export const config = {
       if (session?.user.name && trigger === "update") {
         token.name = session.user.name;
 
-        console.log(token.name , "this is token after update")
+        // console.log(token.name , "this is token after update")
       }
 
       return token;
