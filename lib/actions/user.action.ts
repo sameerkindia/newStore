@@ -19,12 +19,22 @@ export async function signInWithCredentials(
   formData: FormData
 ) {
   try {
+
+    console.log("email:", formData.get('email'),
+    "password:", formData.get('password'))
+
     const user = signInFormSchema.parse({
       email: formData.get('email'),
       password: formData.get('password'),
     });
 
+    console.log(user , "this is user login")
+
+    // console.log(signIn , " this is sign in function")
+
     await signIn('credentials', user);
+
+    // console.log(signInUser , "this is sign in user login")
 
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
