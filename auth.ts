@@ -168,3 +168,99 @@ export const config = {
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
+
+
+// import type { NextAuthConfig } from "next-auth";
+// import NextAuth from "next-auth";
+// import CredentialsProvider from "next-auth/providers/credentials";
+// import { cookies } from "next/headers";
+// import { NextResponse } from "next/server";
+
+// export const config = {
+//   pages: {
+//     signIn: "/sign-in",
+//     error: "/sign-in",
+//   },
+//   session: {
+//     strategy: "jwt",
+//     maxAge: 30 * 24 * 60 * 60,
+//   },
+//   providers: [
+//     CredentialsProvider({
+//       credentials: {
+//         email: { type: "email" },
+//         password: { type: "password" },
+//       },
+//       async authorize(credentials) {
+//         if (!credentials?.email || !credentials?.password) return null;
+
+//         try {
+//           // ✅ Fetch user authentication via API route (No Prisma in middleware)
+//           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/prisma/login`, {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//               email: credentials.email,
+//               password: credentials.password,
+//             }),
+//           });
+
+//           if (!res.ok) return null;
+//           return await res.json();
+//         } catch (error) {
+//           console.error("Auth error:", error);
+//           return null;
+//         }
+//       },
+//     }),
+//   ],
+//   callbacks: {
+//     async session({ session, token }) {
+//       // @ts-ignore
+//       session.user = { id: token.sub, name: token.name, role: token.role };
+//       return session;
+//     },
+//     async jwt({ token, user, trigger, session }) {
+//       if (user) {
+//         token.id = user.id;
+//         // @ts-ignore
+//         token.role = user.role;
+//       }
+
+//       if (trigger === "update" && session?.user.name) {
+//         await fetch(`${process.env.NEXTAUTH_URL}/api/prisma/update-user`, {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({ userId: token.id, name: session.user.name }),
+//         });
+
+//         token.name = session.user.name;
+//       }
+
+//       return token;
+//     },
+//     authorized({ request, auth }) {
+//       const protectedPaths = [
+//         /\/shipping-address/, /\/payment-method/, /\/place-order/,
+//         /\/profile/, /\/user\/(.*)/, /\/order\/(.*)/, /\/admin/,
+//       ];
+
+//       if (!auth && protectedPaths.some((p) => p.test(request.nextUrl.pathname))) return false;
+
+//       // ✅ Offload cart session management to API
+//       if (!request.cookies.get("sessionCartId")) {
+//         return fetch(`${process.env.NEXTAUTH_URL}/api/prisma/cart-session`)
+//           .then((res) => res.json())
+//           .then(({ sessionCartId }) => {
+//             const response = NextResponse.next();
+//             response.cookies.set("sessionCartId", sessionCartId);
+//             return response;
+//           });
+//       }
+
+//       return true;
+//     },
+//   },
+// } satisfies NextAuthConfig;
+
+// export const { handlers, auth, signIn, signOut } = NextAuth(config);

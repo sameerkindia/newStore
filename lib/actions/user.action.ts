@@ -11,7 +11,6 @@ import { z } from 'zod';
 import { PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 import { Prisma } from '@prisma/client';
-// import { signInFormSchema } from './validator';
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -24,7 +23,6 @@ export async function signInWithCredentials(
       password: formData.get('password'),
     });
 
-    await signIn('credentials', user);
 
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
@@ -181,26 +179,6 @@ export async function updateProfile(user: { name: string; email: string }) {
 
 
 // Get all users
-// export async function getAllUsers({
-//   limit = PAGE_SIZE,
-//   page,
-// }: {
-//   limit?: number;
-//   page: number;
-// }) {
-//   const data = await prisma.user.findMany({
-//     orderBy: { createdAt: 'desc' },
-//     take: limit,
-//     skip: (page - 1) * limit,
-//   });
-
-//   const dataCount = await prisma.user.count();
-
-//   return {
-//     data,
-//     totalPages: Math.ceil(dataCount / limit),
-//   };
-// }
 
 export async function getAllUsers({
   limit = PAGE_SIZE,
