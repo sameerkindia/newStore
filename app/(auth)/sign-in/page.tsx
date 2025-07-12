@@ -29,7 +29,7 @@ const SignIn = async (props: {
 
   const session = await auth();
 
-  console.log(session , "this is session")
+  // console.log(session , "this is session")
 
   if (session) {
     return redirect(callbackUrl || '/');

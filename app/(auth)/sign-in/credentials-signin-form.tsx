@@ -10,14 +10,14 @@ import { useFormStatus } from "react-dom";
 import { signInWithCredentials } from "@/lib/actions/user.action";
 import { useSearchParams } from 'next/navigation';
 
-const SignInButton = () => {
-  const { pending } = useFormStatus();
-  return (
-    <Button disabled={pending} className='w-full' variant='default'>
-      {pending ? 'Signing In...' : 'Sign In with credentials'}
-    </Button>
-  );
-};
+// const SignInButton = () => {
+//   const { pending } = useFormStatus();
+//   return (
+//     <Button disabled={pending} className='w-full' variant='default'>
+//       {pending ? 'Signing In...' : 'Sign In with credentials'}
+//     </Button>
+//   );
+// };
 
 const CredentialsSignInForm = () => {
   const searchParams = useSearchParams();
@@ -27,6 +27,17 @@ const CredentialsSignInForm = () => {
     message: "",
     success: false,
   });
+
+  const SignInButton = () => {
+    const { pending } = useFormStatus();
+    return (
+      <Button disabled={pending} className='w-full' variant='default'>
+        {pending ? 'Signing In...' : 'Sign In with credentials'}
+      </Button>
+    );
+  };
+
+  console.log(data , "this is signin data")
 
   return (
     <form action={action}>
